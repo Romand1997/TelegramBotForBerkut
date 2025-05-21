@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-users-table" author="roma">
+        <createTable tableName="users">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime(6)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="full_name" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="telegram_chat_id" type="varchar(255)">
+                <constraints unique="false" nullable="true"/>
+            </column>
+            <column name="token" type="varchar(255)">
+                <constraints unique="false" nullable="true"/>
+            </column>
+            <column name="login" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-roles-table" author="roma">
+        <createTable tableName="roles">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime(6)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-messages-table" author="roma">
+        <createTable tableName="messages">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime(6)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="body" type="varchar(255)">
+                <constraints unique="false" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints unique="false" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-messages-users-foreign-key" author="roma">
+        <addForeignKeyConstraint
+                baseTableName="messages"
+                baseColumnNames="user_id"
+                constraintName="fk_messages_user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"/>
+    </changeSet>
+
+    <changeSet id="create-users-roles-table" author="roma">
+        <createTable tableName="users_roles">
+            <column name="user_id" type="bigint"/>
+            <column name="role_id" type="bigint"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-users-roles-table-foreign-key-user-id" author="roma">
+        <addForeignKeyConstraint baseTableName="users_roles"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet id="create-users-roles-table-foreign-key-courses-id" author="roma">
+        <addForeignKeyConstraint baseTableName="users_roles"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_role_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"
+                                 validate="true"/>
+    </changeSet>
+</databaseChangeLog>
