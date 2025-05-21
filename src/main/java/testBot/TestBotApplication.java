@@ -24,9 +24,6 @@ public class TestBotApplication {
 		botsApi.registerBot(bot);
 		return botsApi;
 	}
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
 
 }

@@ -3,15 +3,21 @@ package testBot.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import testBot.DTO.LoginRequest;
 import testBot.DTO.LoginResponse;
 import testBot.DTO.RegisterRequest;
+import testBot.DTO.RegisterResponse;
 import testBot.exceptions.LoginException;
 import testBot.exceptions.PasswordException;
 import testBot.exceptions.UserFoundException;
 import testBot.models.User;
+import testBot.services.Impl.JWTService;
 import testBot.services.Impl.UserServiceImpl;
 import testBot.services.Impl.ValidateService;
 import java.security.Principal;
@@ -24,12 +30,14 @@ import java.util.Map;
 public class UserController {
     private final UserServiceImpl userService;
     private final ValidateService validateService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
             validateService.validateRegister(request);
-            LoginResponse response = userService.checkRegistration(request.getLogin(), request.getFullName(), request.getPassword(), request.getRePassword());
+            RegisterResponse response = userService.checkRegistration(request.getLogin(), request.getFullName(), request.getPassword(), request.getRePassword());
             return ResponseEntity.ok(response);
         } catch (LoginException | PasswordException | UserFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -42,7 +50,12 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             validateService.validateLogin(request);
-            LoginResponse response = userService.authenticateAndGenerateToken(request.getLogin(), request.getPassword());
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword())
+            );
+            String login = userService.getLoginByAuth(auth);
+            String token = jwtService.generateToken(login);
+            LoginResponse response = userService.generateResponse(login, token);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (LoginException | PasswordException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
