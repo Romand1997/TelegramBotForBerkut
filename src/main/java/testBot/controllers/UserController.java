@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import testBot.DTO.LoginRequest;
 import testBot.DTO.LoginResponse;
@@ -20,6 +19,7 @@ import testBot.models.User;
 import testBot.services.Impl.JWTService;
 import testBot.services.Impl.UserServiceImpl;
 import testBot.services.Impl.ValidateService;
+
 import java.security.Principal;
 import java.util.Map;
 

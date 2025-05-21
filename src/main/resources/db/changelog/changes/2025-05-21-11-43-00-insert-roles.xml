@@ -8,6 +8,7 @@
     <changeSet id="insert-role" author="roma">
         <insert tableName="roles">
             <column name="name" value="ROLE_USER"/>
-            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>        </insert>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

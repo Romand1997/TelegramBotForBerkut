@@ -5,7 +5,6 @@ import testBot.DTO.LoginRequest;
 import testBot.DTO.RegisterRequest;
 import testBot.exceptions.LoginException;
 import testBot.exceptions.PasswordException;
-
 import java.util.Objects;
 
 @Service
