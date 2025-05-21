@@ -42,7 +42,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             validateService.validateLogin(request);
-            LoginResponse response = userService.checkLogin(request.getLogin(), request.getPassword());
+            LoginResponse response = userService.authenticateAndGenerateToken(request.getLogin(), request.getPassword());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (LoginException | PasswordException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
